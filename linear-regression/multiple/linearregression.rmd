@@ -2,7 +2,7 @@ library(ggiraphExtra)
 library(ggiraph)
 library(plyr)
 
-data <- read.csv(file.choose())
+data <- read.csv("./linear-regression/multiple/data/insurance.csv")
 
 cor(data[])
 
