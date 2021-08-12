@@ -1,0 +1,27 @@
+library(ggiraphExtra)
+library(ggiraph)
+library(plyr)
+
+data <- read.csv("./linear-regression/single/insurance.csv")
+attach(data)
+cor(data[])
+
+dt = sort(sample(nrow(data), nrow(data)*.8))
+train<-data[dt,]
+test<-data[-dt,]
+ 
+model = lm(charges~smoker, data = train)
+ 
+summary(model)
+
+ggPredict(model,se=TRUE,interactive=TRUE)
+ 
+prediction <- predict(model, newdata = test)
+
+x <- as.numeric(unlist(test["smoker"]))
+y1 <- as.numeric(unlist(test["charges"]))
+y2 <- as.numeric(unlist(prediction))
+
+
+plot(x,y1,type="l",col="red",xlab="Smoker",ylab="Charges")
+lines(x,y2,type="l",col="blue",lwd=10)
