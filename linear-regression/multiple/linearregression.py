@@ -25,4 +25,3 @@ predict_charges = sns.scatterplot(y_test, pred)
 plt.xlabel('Actual Charges')
 plt.ylabel('Predict Charges')
 plt.show()
-# %%
