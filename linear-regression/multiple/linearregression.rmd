@@ -1,0 +1,21 @@
+library(ggiraphExtra)
+library(ggiraph)
+library(plyr)
+
+data <- read.csv("./linear-regression/multiple/data/insurance.csv")
+
+cor(data[])
+
+dt = sort(sample(nrow(data), nrow(data)*.8))
+train<-data[dt,]
+test<-data[-dt,]
+
+model = lm(charges~age * bmi + age*smoker + bmi*smoker, data = train)
+summary(model)
+ggPredict(model,se=TRUE,interactive=TRUE)
+
+prediction <- predict(model, newdata = test)
+
+par(mfrow=c(1,2))
+plot(test$charges)
+plot(prediction)
