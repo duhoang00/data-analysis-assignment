@@ -4,25 +4,29 @@ library(scatterplot3d)
 library(ROCR)
 
 #Load data
-framingham <- read.csv(file.choose())
-framingham
+df <- read.csv(file.choose())
+df
 
 #Replace NA values in dataset
-framingham[is.na(framingham)]=0
+df[is.na(df)]=0
+
+#Transfer data
+df['deposit'] = yes <- 1
+df['deposit'] = no <- 0
 
 #Split train & test
-set.seed(1234)
-datasize = round(nrow(framingham)*.80) 
-train <- sample_n(framingham, datasize)
+set.seed(100)
+datasize = round(nrow(df)*.80) 
+train <- sample_n(df, datasize)
 train
 
-data_id <- as.numeric(rownames(train)) 
-test <- framingham[-data_id,]
+data_id <- as.numeric(rownames(df)) 
+test <- df[-data_id,]
 test
 
 
 #CreateModel
-model <- glm(TenYearCHD~ male + age + cigsPerDay + prevalentStroke + sysBP + glucose, family = binomial(link = "logit"), data = train)
+model <- glm(deposit~ ., family = binomial(link = "logit"), data = train)
 summary(model)
 
 #GetResult
@@ -34,7 +38,7 @@ coef(model) %>%
 ##Plot base on age and sysBP
 train %>% 
   mutate(fitted = fitted(model)) %>% 
-  select(age, sysBP,fitted) %>% 
+  select(balance, duration,fitted) %>% 
   scatterplot3d(color = "red")
   
 
