@@ -43,7 +43,7 @@ x['previous_index'] = LabelEncoder().fit_transform(x['previous'])
 x['day_index'] = LabelEncoder().fit_transform(x['day'])
 x['education_index'] = LabelEncoder().fit_transform(x['education'])
 x['loan_index'] = LabelEncoder().fit_transform(x['loan'])
-x_e=x.drop(['age','month','default','job','contact','duration','campaign','poutcome','pdays','housing','marital','previous','day','education','loan','balance','age'], axis='columns')
+x_e=x.drop(['age','month','default','job','contact','duration','campaign','poutcome','pdays','housing','marital','previous','day','education','loan','balance'], axis='columns')
 y_e = LabelEncoder().fit_transform(y)
 
 
