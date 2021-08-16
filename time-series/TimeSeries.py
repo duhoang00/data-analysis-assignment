@@ -15,7 +15,7 @@ plt.plot(data['Monthly Mean Total Sunspot Number'])
 
 #%% Check stationary
 stationary_test = adfuller(data['Monthly Mean Total Sunspot Number'])
-print("P-value:", stationary_test[1])
+print(stationary_test)
 
 #%% PACF
 pacf = plot_pacf(data['Monthly Mean Total Sunspot Number'])
@@ -49,5 +49,3 @@ print(ARIMA.summary())
 pre = ARIMA.predict()
 plt.plot(data['Monthly Mean Total Sunspot Number'])
 plt.plot(pre, color ='red')
-
-# %%
