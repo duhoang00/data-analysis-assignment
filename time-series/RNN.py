@@ -32,7 +32,7 @@ testX, testY = create_data(test, look_back)
 #%% reshape input to [samples, time_steps, features]
 trainX = np.reshape(trainX, (trainX.shape[0],1,trainX.shape[1]))
 testX = np.reshape(testX,(testX.shape[0],1,testX.shape[1]))
-
+print(testX)
 #%% create model
 model = Sequential()
 model.add(LSTM(4, input_shape=(1,look_back)))
