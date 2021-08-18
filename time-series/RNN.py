@@ -38,29 +38,16 @@ model = Sequential()
 model.add(LSTM(4, input_shape=(1,look_back)))
 model.add(Dense(1))
 model.compile(loss='mean_squared_error', optimizer='adam')
-model.fit(trainX,trainY,epochs=100,batch_size=1,verbose=2)
-
-#%% make prediction
-trainpred=model.predict(trainX)
-testpred=model.predict(testX)
-
-#%% inverse prediction
-trainpred = sc.inverse_transform(trainpred)
-trainY = sc.inverse_transform([trainY])
-testpred = sc.inverse_transform(testpred)
-testY = sc.inverse_transform([testY])
-
-#%% shift train, test prediction for plotting
-trainpredplot = np.empty_like(data)
-trainpredplot[:, :] = np.nan
-trainpredplot[look_back:len(trainpred)+look_back, :] = trainpred
-testpredplot = np.empty_like(data)
-testpredplot[:, :] = np.nan
-testpredplot[len(trainpred)+(look_back*2)+1:len(data)-1, :] = testpred
-
-#%% plotting base data and prediction
-plt.plot(sc.inverse_transform(data))
-plt.plot(trainpredplot)
-plt.plot(testpredplot)
+model.fit(trainX,trainY,epochs=25,batch_size=1)
+#%% Predict Test
+y_pred = model.predict(testX)
+sc.scale_
+#%% Inverse prediction
+y_pred = sc.inverse_transform(y_pred)
+#%% Reshape Baseline
+testY = testY.reshape(-1,1)
+testY = sc.inverse_transform(testY)
+#%% plot baseline and prediction
+plt.plot(testY)
+plt.plot(y_pred)
 plt.show()
-# %%
