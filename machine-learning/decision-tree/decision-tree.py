@@ -47,7 +47,7 @@ print(scores)  # 0.945
 
 # %% Tree plot
 features = ["Daily Time Spent on Site",
-            "Age", "Area", "Income", "Daily Internet", "Usage", "Male", "Ad Topic Line_e", "City_e", "Country_e"]
+            "Age", "Area Income", "Daily Internet Usage", "Male", "Ad Topic Line_e", "City_e", "Country_e"]
 plt.figure(figsize=(20, 20), dpi=500)
 t = tree.plot_tree(model, feature_names=features,
                    class_names=['No', 'Yes'], filled=True)
