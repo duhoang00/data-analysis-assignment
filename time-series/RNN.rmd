@@ -49,7 +49,7 @@ y_test = Scaled$scaled_test[, 2]
 x_test = Scaled$scaled_test[, 1]
 
 dim(x_train) <- c(length(x_train), 1, 1)
-
+dim(x_test) <- c(length(x_test), 1, 1)
 # specify required arguments
 X_shape2 = dim(x_train)[1]
 X_shape3 = dim(x_train)[2]
@@ -62,6 +62,10 @@ compile(model,optimizer = 'adam',loss='mean_squared_error')
 model %>% fit(x_train,y_train,epochs = 25,batch_size = 1, verbose = 2)
 
 summary(model)
+
+trainpred = predict(model,x_train,batch_size=1)
+plot(x_train,type="line", col="green")
+lines(trainpred,col="orange")
 
 testpred = predict(model,x_test,batch_size=1)
 plot(x_test,type="line", col="green")
