@@ -1,0 +1,42 @@
+#Import library
+library(neuralnet)
+#Import data
+data = read.csv('./data/Advertising.csv')
+head(data)
+#Drop unnecessary col
+df = subset(data,select=-c(Timestamp))
+head(df)
+str(df)
+#Convert char data to num data
+df$Country = as.factor(df$Country)
+df$Country = as.numeric(df$Country)
+df$Ad.Topic.Line = as.factor(df$Ad.Topic.Line)
+df$Ad.Topic.Line = as.numeric(df$Ad.Topic.Line)
+df$City = as.factor(df$City)
+df$City = as.numeric(df$City)
+str(df)
+#Split into train, test
+dt = sort(sample(nrow(df), nrow(df)*.7))
+train<-df[dt,]
+test<-df[-dt,]
+#Split to x, y
+y_train <- train[, "Clicked.on.Ad"]
+y_test <- test[, "Clicked.on.Ad"]
+X_train <- train[, -which(names(train) %in% c("Clicked.on.Ad"))]
+X_test <- test[, -which(names(test) %in% c("Clicked.on.Ad"))]
+#Scale data
+X_test <- scale(X_test)
+X_train <- scale(X_train)
+train <- as.data.frame(X_train) 
+train$Clicked.on.Ad <- y_train
+#Create model
+formula <- paste("Clicked.on.Ad ~ ", paste(colnames(X_train), collapse= " + "))
+fmla <- as.formula(formula)
+NN <- neuralnet(fmla, data=train, linear.output=FALSE)
+plot(NN)
+#Predicing on test
+pred_testNN = compute(NN, X_test)
+pred_testNN = (pred_testNN$net.result * (max(df$Clicked.on.Ad) - min(df$Clicked.on.Ad))) + min(df$Clicked.on.Ad)
+plot(test$Clicked.on.Ad, pred_testNN, col='blue', pch=16, ylab = "predicted rating NN", xlab = "real rating")
+abline(0,1)
+
