@@ -1,7 +1,7 @@
 #Import library
 library(neuralnet)
 #Import data
-data = read.csv('./data/Advertising.csv')
+data = read.csv("./machine-learning/neural-network/advertising.csv")
 head(data)
 #Drop unnecessary col
 df = subset(data,select=-c(Timestamp))
