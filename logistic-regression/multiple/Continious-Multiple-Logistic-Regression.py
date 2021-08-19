@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 
 #%% - Load Data
@@ -48,7 +49,6 @@ print(score)
 y_pred = model.predict(X_test)
 print("Classification report:\n",classification_report(y_test, y_pred))
 print("Accuracy score:",accuracy_score(y_test,y_pred))
-lg=accuracy_score(y_test,y_pred)
 
 #%% - Visualize Confusion Matrix
 cm = confusion_matrix( y_test, y_pred )
@@ -60,3 +60,13 @@ for i in range(2):
     for j in range(2):
             ax.text(j, i, cm[i, j], ha='center', va='center', color='white',fontsize=26)
 plt.show()
+
+
+# %%
+y_pred_proba = model.predict_proba(X_test)[::,1]
+fpr, tpr, _ = metrics.roc_curve(y_test,  y_pred_proba)
+auc = metrics.roc_auc_score(y_test, y_pred_proba)
+plt.plot(fpr,tpr,label="predict value, auc="+str(auc))
+plt.legend(loc=4)
+plt.show()
+
