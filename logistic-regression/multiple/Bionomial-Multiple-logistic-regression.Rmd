@@ -4,10 +4,10 @@ library(scatterplot)
 library(caTools)
 library(ROCR)
 
-
 # - Load Data
-bank <- read.csv(file.choose())
+bank <- read.csv("./logistic-regression/multiple/deposit_bank.csv")
 head(bank)
+
 # -Replace NA values in dataset
 bank[is.na(bank)]=0
 
