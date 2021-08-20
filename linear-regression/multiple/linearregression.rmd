@@ -6,7 +6,7 @@ dt = sort(sample(nrow(data), nrow(data)*.8))
 train<-data[dt,]
 test<-data[-dt,]
 
-model = lm(charges~age * bmi + age*smoker + bmi*smoker, data = train)
+model = lm(charges~age + smoker + bmi, data = train)
 summary(model)
 prediction <- predict(model, newdata = test)
 
