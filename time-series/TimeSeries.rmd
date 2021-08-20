@@ -2,35 +2,47 @@
 library(forecast)
 library(tseries)
 library(tidyr)
+
 # Load data
 data=read.csv('./time-series/data/Sunspots.csv')
+
 # Create variable
 x <- data$Monthly.Mean.Total.Sunspot.Number
+
 # Data overview
 plot(x, type = "line")
+
 # check stationary
 adf.test(x)
+
 # PACF 
 pacf(x)
+
 # AR
 AR=arima(x, order = c(1,0,0))
 AR
+
 # AR Visuallize
 plot(x, type ="line", col="blue")
 pre = x - residuals(AR)
 lines(pre, type="line", col="red")
+
 # ARMA
 ARMA=arima(x, order = c(1,0,1))
 ARMA
+
 # ARMA Visuallize
 plot(x, type ="line", col="blue")
 pred = x - residuals(ARMA)
 lines(pred, type="line", col="red")
+
 # auto calculate p,q,d
 auto.arima(x, trace = TRUE)
+
 # ARIMA
 ARIMA=arima(x, order = c(1,0,2))
 ARIMA
+
 # ARIMA Visuallize
 plot(x, type ="line", col="blue")
 predict = x- residuals(ARIMA)
