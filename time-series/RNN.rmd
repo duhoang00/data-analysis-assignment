@@ -1,0 +1,72 @@
+library(keras)
+library(tensorflow)
+
+data <- read.csv('./time-series/data/airline-passengers.csv')
+
+head(data)
+
+psg = data$Passengers
+
+diffed = diff(psg, differences = 1)
+
+lags <- function(x, k=1){
+  
+  lagged = c(rep(NA, k), x[1:(length(x)-k)])
+  df = as.data.frame(cbind(lagged,x))
+  colnames(df) <- c('x=t','y=t+1')
+  df[is.na(df)] <- 0
+  return(df)
+}
+supervised = lags(psg, 1)
+head(supervised)
+
+N = nrow(supervised)
+n = round(N *0.7, digits = 0)
+train = supervised[1:n, ]
+test  = supervised[(n+1):N,  ]
+
+scale_data = function(train, test, feature_range = c(0, 1)) {
+  x = train
+  fr_min = feature_range[1]
+  fr_max = feature_range[2]
+  std_train = ((x - min(x) ) / (max(x) - min(x)  ))
+  std_test  = ((test - min(x) ) / (max(x) - min(x)  ))
+  
+  scaled_train = std_train *(fr_max -fr_min) + fr_min
+  scaled_test = std_test *(fr_max -fr_min) + fr_min
+  
+  return( list(scaled_train = as.vector(scaled_train), scaled_test = as.vector(scaled_test) ,scaler= c(min =min(x), max = max(x))) )
+  
+}
+
+
+Scaled = scale_data(train, test, c(-1, 1))
+
+y_train = Scaled$scaled_train[, 2]
+x_train = Scaled$scaled_train[, 1]
+
+y_test = Scaled$scaled_test[, 2]
+x_test = Scaled$scaled_test[, 1]
+
+dim(x_train) <- c(length(x_train), 1, 1)
+dim(x_test) <- c(length(x_test), 1, 1)
+# specify required arguments
+X_shape2 = dim(x_train)[1]
+X_shape3 = dim(x_train)[2]
+
+model = keras_model_sequential() %>%
+  layer_lstm(units = 4, batch_input_shape = c(1, X_shape2, X_shape3), stateful= TRUE)%>%
+  layer_dense(units = 1)
+
+compile(model,optimizer = 'adam',loss='mean_squared_error')
+model %>% fit(x_train,y_train,epochs = 25,batch_size = 1, verbose = 2)
+
+summary(model)
+
+trainpred = predict(model,x_train,batch_size=1)
+plot(x_train,type="line", col="green")
+lines(trainpred,col="orange")
+
+testpred = predict(model,x_test,batch_size=1)
+plot(x_test,type="line", col="green")
+lines(testpred,col="orange")
