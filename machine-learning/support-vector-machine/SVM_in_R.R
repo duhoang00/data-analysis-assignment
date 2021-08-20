@@ -3,7 +3,7 @@ library(caTools)
 library(e1071)
 library(readr)
 #Load Dataset
-social <- read_csv("D:/MyUEL/R_Python/social.csv")
+social <- read_csv(".machine-learning/support-vector-machine/social.csv")
 social = social[3:5]
 social$Purchased = factor(social$Purchased, levels = c(0, 1))
 #Splitting the dataset
