@@ -9,7 +9,6 @@ test<-data[-dt,]
 model = lm(charges~age + smoker + bmi, data = train)
 summary(model)
 prediction <- predict(model, newdata = test)
-
 par(mfrow=c(1,2))
 plot(test$charges)
 plot(prediction)
