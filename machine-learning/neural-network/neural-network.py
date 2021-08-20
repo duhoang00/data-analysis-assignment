@@ -4,6 +4,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix
+
 # %% Load data
 df = pd.read_csv("./advertising.csv")
 print(df)
@@ -49,5 +50,3 @@ print(classification_report(y_test, predictions))
 # %% Predict random value
 pre_values = model.predict([[60, 21, 1, 50000, 180, 1, 91, 903]])
 print(pre_values)
-
-# %%
