@@ -12,8 +12,6 @@ test<-data[-dt,]
 
 model = lm(charges~age * bmi + age*smoker + bmi*smoker, data = train)
 summary(model)
-ggPredict(model,se=TRUE,interactive=TRUE)
-
 prediction <- predict(model, newdata = test)
 
 par(mfrow=c(1,2))
