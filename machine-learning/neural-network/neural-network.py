@@ -1,5 +1,7 @@
 # %% Import lib
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split
@@ -46,6 +48,18 @@ predictions = model.predict(X_test)
 print(confusion_matrix(y_test, predictions))
 
 print(classification_report(y_test, predictions))
+
+# %% Plot
+train_predict = model.predict(X_train)
+test_predict = model.predict(X_test)
+
+plt.plot(y_test, color="b")
+plt.plot(test_predict, color="r")
+
+plt.title("Actual vs Predict")
+plt.xlabel("Actual")
+plt.ylabel("Predict")
+plt.show()
 
 # %% Predict random value
 pre_values = model.predict([[60, 21, 1, 50000, 180, 1, 91, 903]])
