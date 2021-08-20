@@ -19,6 +19,8 @@ AR
 plot(x, type ="line", col="blue")
 pre = x - residuals(AR)
 lines(pre, type="line", col="red")
+# ACF 
+acf(x)
 # ARMA
 ARMA=arima(x, order = c(1,0,1))
 ARMA

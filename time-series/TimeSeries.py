@@ -2,7 +2,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import adfuller
-from statsmodels.graphics.tsaplots import plot_pacf
+from statsmodels.graphics.tsaplots import plot_pacf, plot_acf
 from statsmodels.tsa.arima_model import ARIMA
 from pmdarima import auto_arima
 
@@ -29,6 +29,9 @@ pred = AR.predict()
 plt.plot(data['Monthly Mean Total Sunspot Number'])
 plt.plot(pred, color ='red')
 
+#%% ACF
+acf = plot_acf(data['Monthly Mean Total Sunspot Number'])
+
 #%% ARMA model
 ARMA = ARIMA(data['Monthly Mean Total Sunspot Number'], order = (1,0,1)).fit()
 print(ARMA.summary())
@@ -49,3 +52,4 @@ print(ARIMA.summary())
 pre = ARIMA.predict()
 plt.plot(data['Monthly Mean Total Sunspot Number'])
 plt.plot(pre, color ='red')
+# %%
