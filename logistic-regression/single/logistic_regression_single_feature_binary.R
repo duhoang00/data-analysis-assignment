@@ -6,6 +6,7 @@ library('ISLR')
 
 #Load Data set
 (mydata <- as_tibble(ISLR::Default))
+head(mydata)
 
 #Checking for NA values
 sum(is.na(mydata))

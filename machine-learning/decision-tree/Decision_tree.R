@@ -1,30 +1,37 @@
-#Import Library
-library(DAAG)
+#Import library
 library(party)
-library(rpart)
-library(rpart.plot)
-library(mlbench)
-library(caret)
-library(pROC)
 library(tree)
 
-#Load Data form R in-built data set (Email Spam Detection)
-str(spam7)
-mydata <- spam7
+#Load Dataset
+data(iris)
+str(iris)
+head(iris)
 
-#Separate Train and Test
-set.seed(1234)
-ind <- sample(2, nrow(mydata), replace = T, prob = c(0.5, 0.5))
-train <- mydata[ind == 1,]
-test <- mydata[ind == 2,]
+#Split Train, Test
+set.seed(1234) #To get reproducible result
+ind <- sample(2,nrow(iris), replace=TRUE, prob=c(0.7,0.3))
+TrainData <- iris[ind==1,]
+TestData <- iris[ind==2,]
 
-#Tree Classification
-tree <- rpart(yesno ~., data = train)
-rpart.plot(tree)
-printcp(tree)
-rpart(formula = yesno ~ ., data = train)
-tree <- rpart(yesno ~., data = train,cp=0.07444)
+#Create model
+DecisionTreeModel <- Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width
+iris_ctree <- ctree(DecisionTreeModel, data=TrainData)
 
-#Confusion Matrix
-p <- predict(tree, train, type = 'class')
-confusionMatrix(p, train$yesno, positive='y')
+#Predict Train Data
+train_predict <- predict(iris_ctree,TrainData,type="response")
+
+#Confusion matrix and misclassification errors - Train Data
+table(train_predict,TrainData$Species)
+mean(train_predict != TrainData$Species) * 100
+
+#Predict Test Data
+test_predict <- predict(iris_ctree, newdata= TestData,type="response")
+
+#Confusion matrix and misclassification errors - Test Data
+table(test_predict, TestData$Species)
+mean(test_predict != TestData$Species) * 100
+
+#Print and plot model
+print(iris_ctree)
+plot(iris_ctree)
+plot(iris_ctree, type="simple")

@@ -1,67 +1,49 @@
 #Import library
-library(caTools)
+library(caret)
 library(e1071)
 library(readr)
-
 #Load Dataset
-social <- read_csv("./machine-learning/support-vector-machine/social.csv")
-social = social[3:5]
-social$Purchased = factor(social$Purchased, levels = c(0, 1))
-
-#Splitting the dataset
-set.seed(123)
-split = sample.split(social$Purchased, SplitRatio = 0.75)
-  
-training_set = subset(social, split == TRUE)
-test_set = subset(social, split == FALSE)
-training_set[-3] = scale(training_set[-3])
-test_set[-3] = scale(test_set[-3])
-
-#Fitting SVM to the training set
-classifier = svm(formula = Purchased ~ ., data = training_set, type = 'C-classification', kernel = 'linear')
-
-#Summary
-summary(classifier)
-
-#Predicting the Test set results
-y_pred = predict(classifier, newdata = test_set[-3])
-cm = table(test_set[, 3], y_pred)
-
-#Visualizing the Training set results
-set = training_set
-X1 = seq(min(set[, 1]) - 1, max(set[, 1]) + 1, by = 0.01)
-X2 = seq(min(set[, 2]) - 1, max(set[, 2]) + 1, by = 0.01)
-  
-grid_set = expand.grid(X1, X2)
-colnames(grid_set) = c('Age', 'EstimatedSalary')
-y_grid = predict(classifier, newdata = grid_set)
-  
-plot(set[, -3],
-     main = 'SVM (Training set)',
-     xlab = 'Age', ylab = 'Estimated Salary',
-     xlim = range(X1), ylim = range(X2))
-  
-contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
-  
-points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'aquamarine'))
-  
-points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
-
-#Visualizing the Test set results
-set = test_set
-X1 = seq(min(set[, 1]) - 1, max(set[, 1]) + 1, by = 0.01)
-X2 = seq(min(set[, 2]) - 1, max(set[, 2]) + 1, by = 0.01)
-  
-grid_set = expand.grid(X1, X2)
-colnames(grid_set) = c('Age', 'EstimatedSalary')
-y_grid = predict(classifier, newdata = grid_set)
-  
-plot(set[, -3], main = 'SVM (Test set)',
-     xlab = 'Age', ylab = 'Estimated Salary',
-     xlim = range(X1), ylim = range(X2))
-  
-contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
-  
-points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'aquamarine'))
-  
-points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
+heart_df  <- read.csv("D:/MyUEL/R_Python/heart_tidy.csv", sep=',', header = FALSE)
+str(heart_df)
+#Display the top 6 rows of the data set
+head(heart_df)
+dim(heart_df)
+#Split the data into Train, Test
+set.seed(2)
+intrain <- createDataPartition(y=heart_df$V14, p=0.7, list=F)
+training <- heart_df[intrain,]
+testing <- heart_df[-intrain,]
+#checking the dimensions of training data frame and testing data
+dim(training)
+dim(testing)
+#Checks for any null values
+anyNA(heart_df)
+#checking the summary of dataset
+summary(heart_df)
+#convert the V14 variables to categorical variables
+training["V14"] = factor(training[["V14"]])
+#control all the computational overheads - PreProcessing
+trctrl <- trainControl(method = "repeatedcv", number=10, repeats = 3)
+svm_linear <- train(V14~. , data=training, method = "svmLinear", trControl = trctrl, preProcess = c("center", "scale"),tuneLength=10)
+svm_linear
+#predict classes for test set
+test_pred <- predict(svm_linear, newdata= testing)
+test_pred 
+summary(test_pred)
+#Confusion Maxtrix
+confusionMatrix(table(test_pred, testing$V14))
+#build svmLinear classifier
+grid <- expand.grid(C = c(0,0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2,5))
+svm_Linear_Grid <- train(V14 ~., data = training, method = "svmLinear",
+trControl=trctrl,
+preProcess = c("center", "scale"),
+tuneGrid = grid,
+tuneLength = 10)
+svm_Linear_Grid
+#Visualzation
+plot(svm_Linear_Grid)
+#Predict using model svmLinear for test set
+test_pred_grid <- predict(svm_Linear_Grid, newdata = testing)
+test_pred_grid
+#Confusion Matrix
+confusionMatrix(table(test_pred_grid, testing$V14))

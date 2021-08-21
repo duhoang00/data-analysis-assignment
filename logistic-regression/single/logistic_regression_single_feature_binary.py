@@ -12,17 +12,11 @@ import plotly.graph_objects as go  # for data visualization
 # %% Load Data set
 df = pd.read_csv('./games.csv')
 
-# %% Print the first few columns
-df.iloc[:, :12]
-
 # %% Edit new feilds and columns
 df['rating_difference'] = df['white_rating']-df['black_rating']
 df['white_win'] = df['winner'].apply(lambda x: 1 if x == 'white' else 0)
 df['match_outcome'] = df['winner'].apply(lambda x: 1 if x == 'white' else
                                          0 if x == 'draw' else -1)
-
-# %% Check by printing last few cols in a dataframe
-df.iloc[:, 13:]
 
 # %% Select data for modeling
 X = df['rating_difference'].values.reshape(-1, 1)
