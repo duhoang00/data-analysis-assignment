@@ -1,0 +1,54 @@
+# - Import Data
+library(dplyr)
+library(scatterplot)
+library(caTools)
+library(ROCR)
+
+# - Load Data
+bank <- read.csv("./logistic-regression/multiple/deposit_bank.csv")
+head(bank)
+
+# -Replace NA values in dataset
+bank[is.na(bank)]=0
+
+# - Process Data
+bank$deposit <-ifelse(bank$deposit =="yes",1,0)
+bank$default <-ifelse(bank$default =="yes",1,0)
+bank$housing <-ifelse(bank$housing =="yes",1,0)
+bank$loan <-ifelse(bank$loan =="yes",1,0)
+head(bank)
+
+# Split train & test
+set.seed(100)
+split = sample.split(bank$deposit, SplitRatio = 0.65)
+train = subset(bank,split==TRUE)
+test = subset(bank,split==FALSE)
+head(train)
+
+# - CreateModel
+model <- glm(deposit~., data = train,  family = binomial)
+summary(model)
+
+# - GetResult
+coef(model) %>% 
+  exp() %>% 
+  round(digits = 6)
+
+# - Create Predict base on train data
+y_pred <-predict(model,train,type="response")
+summary(y_pred)
+
+# - Create Predict base on test data
+y_test <-predict(model,test,type="response")
+summary(y_test)
+
+# - Confusion Matrxi
+table(test$deposit,y_test > 0.5)
+
+# - Visualize
+ROCRpred = prediction(y_pred,train$deposit)
+ROCRperf = performance(ROCRpred,"tpr","fpr")
+plot(ROCRperf,colorize=TRUE, ,print.cutoffs.at=seq(0,1,by=0.1), text.adj=c(-0.2,1.7))
+
+# - Caculate Accuracy Score
+as.numeric(performance(ROCRpred,"auc")@y.values)
