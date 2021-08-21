@@ -1,8 +1,6 @@
 # %% Import lib
-import numpy as np
 import pandas as pd
-import seaborn as sns
-from sklearn.tree import export_graphviz, plot_tree
+from sklearn.tree import plot_tree
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
@@ -24,7 +22,7 @@ df.isnull().sum()
 # %% Process data
 x = df.drop("Clicked on Ad", axis="columns")
 y = df["Clicked on Ad"]
-print(x)  # 9 cols
+print(x)
 print(y)
 
 # %% Label
@@ -47,17 +45,12 @@ print(model.estimators_)
 
 # %% Scores
 scores = model.score(X_test, y_test)
-print(scores)  # 0.965
+print(scores)
 
 # %% Plot first 5 trees
 features = ["Daily Time Spent on Site",
             "Age", "Area Income", "Daily Internet Usage", "Male", "Ad Topic Line_e", "City_e", "Country_e"]
-# plt.figure(figsize=(20, 20), dpi=1000)
 fig, axes = plt.subplots(nrows=1, ncols=5, figsize=(10, 2), dpi=900)
-
-# t = export_graphviz(model, feature_names=features,
-#                     class_names=['No', 'Yes'], filled=True)
-# plt.show()
 
 for index in range(0, 5):
     plot_tree(model.estimators_[index],
