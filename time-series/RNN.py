@@ -32,7 +32,6 @@ testX, testY = create_data(test, look_back)
 # %% reshape input to [samples, time_steps, features]
 trainX = np.reshape(trainX, (trainX.shape[0], 1, trainX.shape[1]))
 testX = np.reshape(testX, (testX.shape[0], 1, testX.shape[1]))
-print(testX)
 
 # %% create model
 model = Sequential()
@@ -42,19 +41,20 @@ model.compile(loss='mean_squared_error', optimizer='adam')
 model.fit(trainX, trainY, epochs=25, batch_size=1)
 
 # %% Predict Test
-y_pred = model.predict(testX)
+pred = model.predict(testX)
 sc.scale_
-
-# %% Inverse prediction
-y_pred = sc.inverse_transform(y_pred)
+pred = sc.inverse_transform(pred)
+print(pred)
 
 # %% Reshape Baseline
 testY = testY.reshape(-1, 1)
 testY = sc.inverse_transform(testY)
-
+print(testY)
 # %% plot baseline and prediction
 plt.plot(testY, label='Real number of passengers')
-plt.plot(y_pred, label='Predicted number of passengers')
+plt.plot(pred, label='Predicted number of passengers')
 plt.ylabel('# Passengers')
 plt.legend()
 plt.show()
+
+# %%
